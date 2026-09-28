@@ -12,5 +12,5 @@
 ## Project rules
 
 - Project links live in `src/lib/projects.ts` as one typed array; the dashboard maps over it. Add or reorder modules there so card order stays the single source of truth.
-- Colors come only from the oklch tokens in `src/styles.css` (brand, paper, mist, ink, mute, sage, ember, line). Components use semantic classes — never hex or `bg-white`/`text-black` utilities — so the paper theme survives a dark variant later.
+- Colors come only from the oklch tokens in `src/styles.css` (navy, page, ink, mute, line). Components use semantic classes — never hex or `bg-white`/`text-black` utilities. Per-module pastel tints live on each entry in `src/lib/projects.ts` and are applied via inline style.
 
