@@ -5,16 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Vantage ERP design system — "Ink Editorial Grid".
- *
- * A paper-editorial register: warm paper ground, deep forest-ink brand, a single
- * ember accent reserved for the "open" cue, sage for live status. Type is
- * Fraunces (display) over IBM Plex Sans, with IBM Plex Mono for all data.
- * Corners are square and rules are hairlines, so panels read like a printed
- * directory rather than a SaaS card deck.
- *
- * All colors use oklch. @theme inline maps them to Tailwind utilities
- * (e.g. --color-brand -> bg-brand).
+ * ERP Suite design system — matches the reference console: deep navy header,
+ * soft blue-white page ground, white rounded cards, per-module pastel icon
+ * badges and tinted Open buttons. Type is Plus Jakarta Sans throughout.
  */
 
 @theme inline {
@@ -51,18 +44,15 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
-  /* Ink editorial palette */
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-paper: var(--paper);
-  --color-mist: var(--mist);
+  /* ERP Suite palette */
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-page: var(--page);
   --color-ink: var(--ink);
   --color-mute: var(--mute);
-  --color-sage: var(--sage);
-  --color-ember: var(--ember);
   --color-line: var(--line);
   --color-line-soft: var(--line-soft);
-  --shadow-panel: var(--shadow-panel-elev);
+  --shadow-card: var(--shadow-card-elev);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -80,61 +70,56 @@
 }
 
 :root {
-  /* Square corners: the direction draws panels with rules, not radius. */
-  --radius: 0.125rem;
+  --radius: 0.75rem;
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  /* Ink editorial palette */
-  --brand: oklch(0.2456 0.0216 170.26); /* #16241f */
-  --brand-foreground: oklch(0.9527 0.0168 88); /* #f4efe3 */
-  --ember: oklch(0.5912 0.156 38.28); /* #c8552f */
-  --paper: oklch(0.9527 0.0168 88); /* #f4efe3 */
-  --mist: oklch(0.9029 0.0219 83.26); /* #e6decf */
-  --ink: oklch(0.2405 0.012 84.56); /* #221f19 */
-  --mute: oklch(0.6069 0.0246 80.62); /* #8a8172 */
-  --sage: oklch(0.5536 0.039 160.49); /* #5f7a6b */
-  --line: oklch(0.2405 0.012 84.56 / 0.16);
-  --line-soft: oklch(0.2405 0.012 84.56 / 0.09);
-  --shadow-panel-elev: 0 14px 30px -22px oklch(0.2405 0.012 84.56 / 0.55);
+  /* ERP Suite palette */
+  --navy: oklch(0.27 0.07 262); /* deep header navy */
+  --navy-deep: oklch(0.22 0.06 264);
+  --page: oklch(0.975 0.008 255); /* soft blue-white ground */
+  --ink: oklch(0.25 0.03 264);
+  --mute: oklch(0.55 0.02 264);
+  --line: oklch(0.25 0.03 264 / 0.1);
+  --line-soft: oklch(0.25 0.03 264 / 0.06);
+  --shadow-card-elev: 0 10px 30px -14px oklch(0.27 0.07 262 / 0.18);
 
-  /* shadcn base tokens follow the paper theme */
-  --background: var(--paper);
+  --background: var(--page);
   --foreground: var(--ink);
-  --card: var(--paper);
+  --card: oklch(1 0 0);
   --card-foreground: var(--ink);
-  --popover: var(--paper);
+  --popover: oklch(1 0 0);
   --popover-foreground: var(--ink);
-  --primary: var(--brand);
-  --primary-foreground: var(--paper);
-  --secondary: var(--mist);
-  --secondary-foreground: var(--brand);
-  --muted: var(--mist);
+  --primary: var(--navy);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.95 0.01 255);
+  --secondary-foreground: var(--navy);
+  --muted: oklch(0.95 0.01 255);
   --muted-foreground: var(--mute);
-  --accent: var(--mist);
-  --accent-foreground: var(--brand);
+  --accent: oklch(0.95 0.01 255);
+  --accent-foreground: var(--navy);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: var(--line);
   --input: var(--line);
-  --ring: var(--ember);
+  --ring: var(--navy);
 
-  --chart-1: var(--ember);
-  --chart-2: var(--sage);
-  --chart-3: var(--brand);
-  --chart-4: oklch(0.72 0.09 90);
+  --chart-1: oklch(0.55 0.2 262);
+  --chart-2: oklch(0.65 0.15 160);
+  --chart-3: var(--navy);
+  --chart-4: oklch(0.75 0.12 85);
   --chart-5: var(--mute);
 
-  --sidebar: var(--mist);
+  --sidebar: oklch(0.97 0.005 255);
   --sidebar-foreground: var(--ink);
-  --sidebar-primary: var(--brand);
-  --sidebar-primary-foreground: var(--paper);
-  --sidebar-accent: var(--paper);
-  --sidebar-accent-foreground: var(--brand);
+  --sidebar-primary: var(--navy);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(1 0 0);
+  --sidebar-accent-foreground: var(--navy);
   --sidebar-border: var(--line);
-  --sidebar-ring: var(--ember);
+  --sidebar-ring: var(--navy);
 }
 
 @layer base {
@@ -148,17 +133,8 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-
-  ::selection {
-    background-color: var(--ember);
-    color: var(--paper);
-  }
 }
 
-/*
- * Motion: one restrained entrance (panels rise in sequence) and a hairline
- * hover lift. Nothing loops, nothing bounces.
- */
 @keyframes panel-rise {
   from {
     opacity: 0;
@@ -170,28 +146,12 @@
   }
 }
 
-@keyframes band-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 .panel-rise {
   animation: panel-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.band-rise {
-  animation: band-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .panel-rise,
-  .band-rise {
+  .panel-rise {
     animation: none;
   }
 }
