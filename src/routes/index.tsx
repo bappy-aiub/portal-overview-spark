@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-page font-sans text-ink">
+    <div className="bg-studio min-h-screen font-sans text-ink">
       {/* Navy header */}
       <header className="bg-navy text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-8">
