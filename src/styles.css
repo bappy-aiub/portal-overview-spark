@@ -84,6 +84,8 @@
   --mute: oklch(0.55 0.02 264);
   --line: oklch(0.25 0.03 264 / 0.1);
   --line-soft: oklch(0.25 0.03 264 / 0.06);
+  --glow-a: oklch(0.945 0.025 245); /* top-left studio wash */
+  --glow-b: oklch(0.955 0.03 262); /* bottom-right studio wash */
   --shadow-card-elev: 0 10px 30px -14px oklch(0.27 0.07 262 / 0.18);
 
   --background: var(--page);
@@ -148,6 +150,37 @@
 
 .panel-rise {
   animation: panel-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Dimensional studio background — soft blurred light washes behind content */
+.bg-studio {
+  position: relative;
+  isolation: isolate;
+}
+.bg-studio::before,
+.bg-studio::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: -1;
+}
+.bg-studio::before {
+  top: -10%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: var(--glow-a);
+  opacity: 0.6;
+}
+.bg-studio::after {
+  bottom: -10%;
+  right: -10%;
+  width: 40%;
+  height: 40%;
+  background: var(--glow-b);
+  opacity: 0.4;
 }
 
 @media (prefers-reduced-motion: reduce) {
