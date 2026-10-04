@@ -48,12 +48,12 @@ function Index() {
               <p className="font-display text-lg font-bold leading-none tracking-wide">
                 ERP SUITE
               </p>
-              <p className="mt-1 text-xs text-white/70">
+              <p className="mt-1 hidden text-xs text-white/70 sm:block">
                 One Platform. Complete Solutions.
               </p>
             </div>
           </div>
-          <button className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium ring-1 ring-white/15 transition-colors hover:bg-white/15">
+          <button className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-white/10 px-4 py-2 text-sm font-medium ring-1 ring-white/15 transition-colors hover:bg-white/15">
             <CircleUserRound className="size-4" />
             Welcome, Admin
             <ChevronDown className="size-4 opacity-70" />
