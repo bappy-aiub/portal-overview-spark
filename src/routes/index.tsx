@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -5,12 +7,30 @@ import {
   CircleUserRound,
   Clock,
   Layers,
+  Loader2,
+  Plus,
   Rocket,
   ShieldCheck,
   Users,
 } from "lucide-react";
 
-import { projects, type Project } from "@/lib/projects";
+import {
+  addCard,
+  cardsQuery,
+  CARD_TINTS,
+  type Card,
+} from "@/lib/cards";
+import { DEFAULT_ICON, PROJECT_ICONS } from "@/lib/projects";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,6 +55,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { data: cards } = useSuspenseQuery(cardsQuery);
+
   return (
     <div className="bg-studio min-h-screen font-sans text-ink">
       {/* Navy header */}
@@ -76,9 +98,10 @@ function Index() {
       {/* Module cards */}
       <main className="mx-auto max-w-7xl px-6 py-12 md:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((project, i) => (
-            <ProjectCard key={project.name} project={project} delay={i * 55} />
+          {cards.map((card, i) => (
+            <ProjectCard key={card.id} card={card} delay={i * 55} />
           ))}
+          <AddCardTile delay={cards.length * 55} />
         </div>
       </main>
 
@@ -115,12 +138,12 @@ function Index() {
   );
 }
 
-function ProjectCard({ project, delay }: { project: Project; delay: number }) {
-  const Icon = project.icon;
+function ProjectCard({ card, delay }: { card: Card; delay: number }) {
+  const Icon = PROJECT_ICONS[card.name] ?? DEFAULT_ICON;
 
   return (
     <a
-      href={project.href}
+      href={card.href}
       target="_blank"
       rel="noreferrer"
       className="panel-rise group flex flex-col items-center rounded-2xl bg-card px-6 py-8 text-center shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/40"
@@ -128,24 +151,176 @@ function ProjectCard({ project, delay }: { project: Project; delay: number }) {
     >
       <div
         className="grid size-16 place-items-center rounded-full"
-        style={{ backgroundColor: project.tintSoft, color: project.tint }}
+        style={{ backgroundColor: card.tintSoft, color: card.tint }}
       >
         <Icon className="size-7" />
       </div>
 
-      <h3 className="mt-5 font-display text-lg font-bold">{project.name}</h3>
+      <h3 className="mt-5 font-display text-lg font-bold">{card.name}</h3>
       <p className="mt-2 flex-1 text-[13px] leading-relaxed text-mute">
-        {project.blurb}
+        {card.blurb}
       </p>
 
       <span
         className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-transform group-hover:gap-3"
-        style={{ backgroundColor: project.tintSoft, color: project.tint }}
+        style={{ backgroundColor: card.tintSoft, color: card.tint }}
       >
         Open
         <ArrowRight className="size-4" />
       </span>
     </a>
+  );
+}
+
+function AddCardTile({ delay }: { delay: number }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [href, setHref] = useState("");
+  const [tintIndex, setTintIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: addCard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-cards"] });
+      setOpen(false);
+      setName("");
+      setHref("");
+      setTintIndex(0);
+      setError(null);
+    },
+    onError: (e) =>
+      setError(
+        e instanceof Error && e.message
+          ? e.message
+          : "Could not add the card. Please try again.",
+      ),
+  });
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!name.trim()) {
+      setError("Please enter a card name.");
+      return;
+    }
+    if (!href.trim()) {
+      setError("Please enter the web address for this project.");
+      return;
+    }
+    const tint = CARD_TINTS[tintIndex];
+    mutation.mutate({
+      name: name.trim(),
+      href: href.trim(),
+      blurb: "",
+      tint: tint.tint,
+      tintSoft: tint.tintSoft,
+    });
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="panel-rise group flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-line bg-card/60 px-6 py-8 text-center text-mute transition-colors hover:border-navy/40 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/40"
+        style={{ animationDelay: `${delay}ms` }}
+      >
+        <span className="grid size-16 place-items-center rounded-full bg-navy/10">
+          <Plus className="size-7" />
+        </span>
+        <span className="font-display text-lg font-bold">Add Card</span>
+        <span className="text-[13px] leading-relaxed">
+          Add a new project link to the dashboard
+        </span>
+      </button>
+
+      <Dialog
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next);
+          if (!next) setError(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display">Add a project card</DialogTitle>
+            <DialogDescription>
+              The new card appears at the end of the dashboard and adjusts its
+              place with the others automatically.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={submit} className="mt-2 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="card-name">Card name</Label>
+              <Input
+                id="card-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Agent Plus"
+                maxLength={60}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="card-link">Web address</Label>
+              <Input
+                id="card-link"
+                value={href}
+                onChange={(e) => setHref(e.target.value)}
+                placeholder="https://agent-plus.example.com"
+                type="url"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Icon color</Label>
+              <div className="flex flex-wrap gap-3">
+                {CARD_TINTS.map((tint, i) => (
+                  <button
+                    key={tint.label}
+                    type="button"
+                    aria-label={tint.label}
+                    aria-pressed={tintIndex === i}
+                    onClick={() => setTintIndex(i)}
+                    className={`grid size-9 place-items-center rounded-full transition-shadow ${
+                      tintIndex === i
+                        ? "ring-2 ring-navy ring-offset-2"
+                        : "hover:scale-105"
+                    }`}
+                    style={{ backgroundColor: tint.tintSoft }}
+                  >
+                    <span
+                      className="size-4 rounded-full"
+                      style={{ backgroundColor: tint.tint }}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={mutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Adding…
+                  </>
+                ) : (
+                  "Add card"
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
