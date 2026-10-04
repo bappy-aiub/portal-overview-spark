@@ -156,6 +156,7 @@
 .bg-studio {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
 .bg-studio::before,
 .bg-studio::after {
